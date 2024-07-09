@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "371174484660",
+    "firebase_url": "https://imtihon3-oy-default-rtdb.firebaseio.com",
+    "project_id": "imtihon3-oy",
+    "storage_bucket": "imtihon3-oy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371174484660:android:0e79c5ce296c0d093645e1",
+        "android_client_info": {
+          "package_name": "com.baseflow.permissionhandler.example"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBBWKL-q_UGnEGQkp8zVysFL7ijUCCsaw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371174484660:android:d5f45b9c685b415c3645e1",
+        "android_client_info": {
+          "package_name": "com.example.dars12"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBBWKL-q_UGnEGQkp8zVysFL7ijUCCsaw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
