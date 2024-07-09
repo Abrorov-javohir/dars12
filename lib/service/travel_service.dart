@@ -11,43 +11,64 @@ class FirebaseProductService extends ChangeNotifier {
         .collection('travel')
         .snapshots()
         .map((QuerySnapshot snapshot) {
-      return snapshot.docs.map((DocumentSnapshot doc) {
-        return Travel.fromDocument(doc);
-      }).toList();
+      return snapshot.docs
+          .map((DocumentSnapshot doc) {
+            try {
+              return Travel.fromDocument(doc);
+            } catch (e) {
+              print('Error parsing document ${doc.id}: $e');
+              return null;
+            }
+          })
+          .where((travel) => travel != null)
+          .cast<Travel>()
+          .toList();
+    }).handleError((error) {
+      print('Error getting products: $error');
     });
   }
 
   Future<void> addProduct(
       String imageUrl, String name, GeoPoint location, double rating) async {
-    await _firestore.collection('travel').add(
-      {
+    try {
+      await _firestore.collection('travel').add({
         'title': name,
         'photo': imageUrl,
         'rating': rating,
-      },
-    );
-    notifyListeners();
+        'location': location, // Make sure to include location if needed
+      });
+      notifyListeners();
+    } catch (e) {
+      print('Error adding product: $e');
+    }
   }
 
   Future<void> updateProduct(
       String id, String imageUrl, String name, GeoPoint location) async {
-    await _firestore.collection('travel').doc(id).update(
-      {
+    try {
+      await _firestore.collection('travel').doc(id).update({
         'title': name,
         'photo': imageUrl,
-      },
-    );
-    notifyListeners();
+        'location': location, // Ensure location is updated if necessary
+      });
+      notifyListeners();
+    } catch (e) {
+      print('Error updating product $id: $e');
+    }
   }
 
   Future<void> deleteProduct(String id, String imageUrl) async {
-    // Firestore documentni o'chirish
-    await _firestore.collection('travel').doc(id).delete();
+    try {
+      // Firestore documentni o'chirish
+      await _firestore.collection('travel').doc(id).delete();
 
-    // Firebase Storage'dan rasmni o'chirish
-    final storageRef = FirebaseStorage.instance.refFromURL(imageUrl);
-    await storageRef.delete();
+      // Firebase Storage'dan rasmni o'chirish
+      final storageRef = FirebaseStorage.instance.refFromURL(imageUrl);
+      await storageRef.delete();
 
-    notifyListeners();
+      notifyListeners();
+    } catch (e) {
+      print('Error deleting product $id: $e');
+    }
   }
 }

@@ -194,58 +194,64 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const SizedBox(height: 16),
             Expanded(
-              child: StreamBuilder<List<Travel>>(
-                stream: travelService.getProducts(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (!snapshot.hasData) {
-                    return const Center(child: Text('No products found'));
-                  }
-                  final products = snapshot.data!;
-                  return GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.75,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                    ),
-                    itemCount: products.length,
-                    itemBuilder: (context, index) {
-                      final product = products[index];
-                      return Stack(
-                        children: [
-                          ProductCard(product: product),
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            child: Column(
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.delete,
-                                      color: Colors.red),
-                                  onPressed: () =>
-                                      _deleteProduct(context, product),
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.edit,
-                                      color: Colors.blue),
-                                  onPressed: () {
-                                    _showEditDialog(context, product, null);
-                                  },
-                                ),
-                              ],
-                            ),
+                child: StreamBuilder<List<Travel>>(
+              stream: travelService.getProducts(),
+              builder: (context, snapshot) {
+                print(
+                    'StreamBuilder ConnectionState: ${snapshot.connectionState}');
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  print('Error: ${snapshot.error}');
+                  return const Center(child: Text('Error loading products'));
+                }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  print('No products found');
+                  return const Center(child: Text('No products found'));
+                }
+                final products = snapshot.data!;
+                print('Found ${products.length} products');
+                return GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.75,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                  ),
+                  itemCount: products.length,
+                  itemBuilder: (context, index) {
+                    final product = products[index];
+                    return Stack(
+                      children: [
+                        ProductCard(product: product),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: Column(
+                            children: [
+                              IconButton(
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
+                                onPressed: () =>
+                                    _deleteProduct(context, product),
+                              ),
+                              IconButton(
+                                icon:
+                                    const Icon(Icons.edit, color: Colors.blue),
+                                onPressed: () {
+                                  _showEditDialog(context, product, null);
+                                },
+                              ),
+                            ],
                           ),
-                        ],
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            )),
           ],
         ),
       ),
